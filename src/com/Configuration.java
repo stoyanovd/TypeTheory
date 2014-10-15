@@ -8,4 +8,6 @@ public class Configuration {
 	public static final boolean DuplicateOutputToConsole = true;
 
 	public static final boolean ForceSpeedRelyOnGuarantees = false;
+	
+	void changeSTH();
 }
