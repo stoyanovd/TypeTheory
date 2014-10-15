@@ -5,7 +5,7 @@ import com.utils.StringUtilities;
 import java.util.Collection;
 
 /**
- * Created by dima on 11.09.14.
+ * Created by dima  on 11.09.14.
  */
 public class Initials {
 
@@ -42,8 +42,7 @@ public class Initials {
 		ALLOWEDSYMBOLS.add('=');
 	}
 
-	public static long getHashLong(int i)
-	{
+	public static long getHashLong(int i) {
 		return HASHPRIMES[i % HASHPRIMESSIZE];
 	}
 

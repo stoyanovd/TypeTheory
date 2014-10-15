@@ -114,6 +114,24 @@ public class Vertex {
 		}
 	}
 
+	public static Vertex makeApplication(Vertex a, Vertex b) {
+		Vertex v = new Vertex();
+		v.operation = 'A';
+		v.left = a;
+		v.right = b;
+		v.countHashAndCo();
+		return v;
+	}
+
+	public static Vertex makeAbstraction(Vertex a, Vertex b) {
+		Vertex v = new Vertex();
+		v.operation = 'L';
+		v.left = a;
+		v.right = b;
+		v.countHashAndCo();
+		return v;
+	}
+
 	public static Vertex copyVertex(Vertex v) {
 		if (v == null) {
 			return null;

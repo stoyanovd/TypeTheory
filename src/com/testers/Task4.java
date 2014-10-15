@@ -9,22 +9,22 @@ import java.io.IOException;
 /**
  * Created by dima on 01.10.14.
  */
-public class Task4 {public static void main(String arg[]) {
+public class Task4 {
 
-	try {
-		Initials.init();
-		MyReader myReader = new MyReader("tests/task4.in");
-		MyPrinter myPrinter = new MyPrinter("tests/task4.out");
+	public static void main(String arg[]) {
 
-		String raw = myReader.readString();
+		try {
+			Initials.init();
+			MyReader myReader = new MyReader("tests/task4.in");
+			MyPrinter myPrinter = new MyPrinter("tests/task4.out");
+
+			String raw = myReader.readString();
 
 
+		} catch (/*WrongBracketsException | IncorrectLambdaExpressionException | */IOException e) {
+			System.out.println(e.toString());
+			e.printStackTrace();
+		}
 
-	} catch (/*WrongBracketsException | IncorrectLambdaExpressionException | */IOException e) {
-		System.out.println(e.toString());
-		e.printStackTrace();
 	}
-
-}
-
 }
