@@ -1,0 +1,22 @@
+
+
+    Lines with '/' as first symbol will be ignored.
+
+
+
+This is the code only to translate one way, the other way is even easier. The function fv gets the list of free variables in a term, and the function freeIn tests if an identifier (a String) is a free variable in a term. Of course, lambda2ski does the translation, and lamb is a helper function to take care of lambda abstractions.
+
+For those who do not know Haskell, the translation from Wikipedia is this:
+1. T[x] => x
+2. T[(E₁ E₂)] => (T[E₁] T[E₂])
+3. T[λx.E] => (K T[E]) (if x does not occur free in E)
+4. T[λx.x] => I
+5. T[λx.λy.E] => T[λx.T[λy.E]] (if x occurs free in E)
+6. T[λx.(E₁ E₂)] => (S T[λx.E₁] T[λx.E₂])
+
+Where T[term] is the translation function applied to the term "term". Having embedded the lambda calculus in SKI we have proven it as a system of universal computation, assuming the extensional equality of the translated term with the original.
+
+It is interesting that the reverse translation, also given on the wikipedia page for combinatory logic, will make the resulting lambda term longer than the original. For the terms I have played with, it seems like translating from the LC into SKI and back always makes the term larger, although I'm not making an attempt to do reductions at the moment.
+
+
+Well, that was fun. Hopefully this works out nicely in Coq as well, and I can make the project a computer verified proof of this translation.
