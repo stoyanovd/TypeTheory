@@ -9,8 +9,7 @@ public class Normalizer {
 
 	HashMap<Vertex, Vertex> done;
 
-	public Normalizer()
-	{
+	public Normalizer() {
 		done = new HashMap<>();
 	}
 }
