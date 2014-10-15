@@ -135,6 +135,10 @@ public class Vertex {
 		return v;
 	}
 
+	public boolean isRedex() {
+		return (operation == 'A' && left.operation == 'L');
+	}
+
 	public static Vertex copyVertex(Vertex v) {
 		if (v == null) {
 			return null;
