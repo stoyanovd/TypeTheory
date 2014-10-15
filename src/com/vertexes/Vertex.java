@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created by dima on 09.09.14.
+ * Created  by dima on 09.09.14.
  */
 public class Vertex {
 
@@ -50,7 +50,7 @@ public class Vertex {
 		if (v.args == null) {
 			this.args = null;
 		} else {
-			this.args = new ArrayList<Vertex>(v.args);
+			this.args = new ArrayList<>(v.args);
 		}
 		countHashAndCo();
 	}
@@ -98,6 +98,9 @@ public class Vertex {
 				return;
 			case 'L':
 			case 'A':
+				if (left == null || right == null) {
+					throw new NullPointerException();
+				}
 				deep = left.deep + right.deep + 1;
 				hash = left.hash * Initials.getHashLong(right.deep + 1) + operation * Initials.getHashLong(right.deep) + right.hash;    // ou dangerous =)
 				return;
@@ -171,7 +174,7 @@ public class Vertex {
 				return s.toString();
 
 			case 'V':
-				return new String(propose);
+				return propose;
 
 			case 'F':
 				return "func";
