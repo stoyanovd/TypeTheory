@@ -1,5 +1,6 @@
 package com.testers;
 
+import com.patterns.Numeral;
 import com.supports.Initials;
 import com.utils.MyPrinter;
 import com.utils.MyReader;
@@ -26,10 +27,19 @@ public class Task4 {
 			String raw = myReader.readString();
 			Vertex v = Parser.parseString(raw);
 
+			System.out.println("after parse get this:");
+			System.out.println(v.toString());
+
+			MyPrinter.printLambdaExpressionAsTree(v);
 			Normalizer normalizer = new Normalizer(v);
 			Vertex t = normalizer.ans;
 
-			myPrinter.printLambdaExpression(t);
+			Integer x = Numeral.getInteger(t);
+			if (x != null) {
+				myPrinter.printlnString("Numeral : " + x);
+			} else {
+				myPrinter.printLambdaExpression(t);
+			}
 
 		} catch (WrongBracketsException | IncorrectLambdaExpressionException | IOException e) {
 			System.out.println(e.toString());

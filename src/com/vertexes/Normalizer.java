@@ -8,22 +8,69 @@ import java.util.Map;
  */
 public class Normalizer {
 
-	private HashMap<Vertex, Vertex> done;
 	public Vertex ans;
-	private int step = 0;
+	private HashMap<Vertex, Vertex> doneMap;
+	private HashMap<Vertex, Integer> dfsMap;
 
 	public Normalizer(Vertex v) {
-		done = new HashMap<>();
-		step = 0;
+		doneMap = new HashMap<>();
+		dfsMap = new HashMap<>();
+
 		ans = new Vertex(v);
 		ans = getNorm(ans);
+
+		System.out.println("ans:");
+		System.out.println(ans.toString());
+
+		NamesDecorator namesDecorator = new NamesDecorator(ans);
+		ans = namesDecorator.nice;
+
+		System.out.println("nice:");
+		System.out.println(ans.toString());
+		System.out.println(dfs_findRedexes(ans));
 	}
 
-	private Vertex unifyNames(Vertex v) {
-		step++;
-		Vertex t = new Vertex(v);
-		innerUnify(t, new HashMap<>(), 0);
-		return t;
+	private boolean hasRedex(Vertex t) {
+		return (dfs_findRedexes(t) != -1);
+	}
+
+	private int dfs_findRedexes(Vertex t) {
+		if (t == null) {
+			return -1;
+		}
+		if (t.isRedex()) {
+			return 0;
+		}
+		if (dfsMap.containsValue(t)) {
+			return dfsMap.get(t);
+		}
+
+		int x = -1;
+		if (t.left != null) {
+			x = dfs_findRedexes(t.left);
+		}
+		if (x != -1) {
+			x++;
+		}
+
+		int y = -1;
+		if (t.right != null) {
+			y = dfs_findRedexes(t.right);
+		}
+		if (y != -1) {
+			y++;
+		}
+
+		int a;
+		if (x == -1 && y == -1) {
+			a = -1;
+		} else if (x != -1 && y != -1) {
+			a = Math.min(x, y);
+		} else {
+			a = (-x * y);
+		}
+		dfsMap.put(t, a);
+		return a;
 	}
 
 	private void innerUnify(Vertex v, Map<String, Integer> map, int i) {
@@ -33,7 +80,7 @@ public class Normalizer {
 		switch (v.operation) {
 			case 'V': {
 				if (map.containsKey(v.propose)) {
-					v.propose = "-" + step + "-" + map.get(v.propose);
+					v.propose = "-" + map.get(v.propose);                                    //to   step
 				}
 				break;
 			}
@@ -43,46 +90,20 @@ public class Normalizer {
 				break;
 			}
 			case 'L': {
-				Map<String, Integer> nmap = new HashMap<>(map);
-				nmap.put(v.left.propose, i);
-				v.left.propose = "-" + step + "-" + i;
-				innerUnify(v.right, nmap, i + 1);
+				map.put(v.left.propose, i);
+				innerUnify(v.right, map, i + 1);
+				map.remove(v.left.propose);
+				v.left.propose = "-" + i;                                //to   step
 			}
 		}
-	}
-
-	private static int dfs_findRedexes(Vertex t) {
-		if (t == null) {
-			return -1;
-		}
-		if (t.isRedex()) {
-			return 0;
-		}
-		int x = -1;
-		if (t.left != null) {
-			x = dfs_findRedexes(t.left);
-		}
-		int y = -1;
-		if (t.right != null) {
-			y = dfs_findRedexes(t.right);
-		}
-		if (x == -1 && y == -1) {
-			return -1;
-		}
-		if (x != -1 && y != -1) {
-			return Math.min(x, y);
-		}
-		return (-x * y);
-	}
-
-	private static boolean hasRedex(Vertex t) {
-		return (dfs_findRedexes(t) != -1);
+		v.countHashAndCo();
 	}
 
 	private Vertex reductRedex(Vertex redex) {
-		Vertex a = unifyNames(redex.left.right);
-		Vertex b = unifyNames(redex.right);
-		Substitution substitution = new Substitution(redex.left.left.propose, b);
+		NamesDecorator namesDecorator = new NamesDecorator(redex.left, redex.right);
+		Vertex a = namesDecorator.nice.right;
+		Vertex b = namesDecorator.nice2;
+		Substitution substitution = new Substitution(namesDecorator.nice.left.propose, b);
 		if (!substitution.makeSubstitution(a)) {
 			System.out.println("This not nice error with same names.\n\n");
 			throw new NullPointerException();
@@ -92,32 +113,41 @@ public class Normalizer {
 
 	private Vertex getNorm(Vertex v) {
 
-		if (!hasRedex(v)) {
+		System.out.println("getNorm, begin: " + v.toString());
+		System.out.println("dfs " + dfs_findRedexes(v));
+
+		if (!hasRedex(v)) {                                                            //TODO-speed    Maybe it is nice to play with maps
 			return v;
 		}
 
-		if (dfs_findRedexes(v) == 0) {
-			if (done.containsKey(v)) {
-				return done.get(v);
-			}
-			Vertex t = reductRedex(v);
-			done.put(v, t);
-			return t;
+		if (doneMap.containsValue(v)) {
+			return doneMap.get(v);
 		}
 
-		if (dfs_findRedexes(v.left) <= dfs_findRedexes(v.right)) {
-			Vertex t = new Vertex();
-			t.operation = v.operation;
-			t.left = getNorm(v.left);
-			t.right = v.right;
-			t.countHashAndCo();
-			return getNorm(t);
+		if (dfs_findRedexes(v) == 0) {
+			Vertex t = reductRedex(v);
+			System.out.println("Reduct from : " + v.toString());
+			System.out.println("To : " + t.toString());
+			Vertex p = getNorm(t);
+			doneMap.put(v, p);
+			doneMap.put(t, p);
+			return p;
 		}
+
 		Vertex t = new Vertex();
 		t.operation = v.operation;
 		t.left = v.left;
-		t.right = getNorm(v.right);
+		t.right = v.right;
+		int x = dfs_findRedexes(v.left);
+		int y = dfs_findRedexes(v.right);
+		if (x != -1 && (y == -1 || x < y)) {
+			t.left = getNorm(v.left);
+		} else {
+			t.right = getNorm(v.right);
+		}
 		t.countHashAndCo();
-		return getNorm(t);
+		t = getNorm(t);
+		doneMap.put(v, t);
+		return t;
 	}
 }

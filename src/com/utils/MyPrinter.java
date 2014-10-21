@@ -50,7 +50,6 @@ public class MyPrinter {
 		}
 	}
 
-
 	public static void printTime(long time) {
 		System.out.println("Time used: " + (System.currentTimeMillis() - time));
 	}
@@ -79,4 +78,6 @@ public class MyPrinter {
 			System.out.println();
 		}
 	}
+
+
 }

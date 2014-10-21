@@ -27,7 +27,7 @@ public class StringUtilities {
 	}
 
 	public static String killExcessWhitespaces(String raw) {
-		System.out.println("_:" + raw + ":");
+		//System.out.println("_:" + raw + ":");
 		StringBuilder stringBuilder = new StringBuilder();
 		for (int i = 0; i < raw.length(); i++) {
 			if (raw.charAt(i) != ' ' || (i != 0 && stringBuilder.charAt(i - 1) != '\\' &&

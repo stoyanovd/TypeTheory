@@ -39,7 +39,7 @@ public class MyReader {
 		if (arrayList != null && arrayList.size() > 0) {
 			StringBuilder s = new StringBuilder();
 			for (int i = 0; i < arrayList.size(); i++) {
-				System.out.println("_" + arrayList.get(i) + "_");
+				//System.out.println("_" + arrayList.get(i) + "_");
 				if (arrayList.get(i).indexOf(System.lineSeparator()) == -1) {
 					s.append(arrayList.get(i));
 				} else {

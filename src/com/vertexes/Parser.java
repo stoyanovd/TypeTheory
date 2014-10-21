@@ -49,12 +49,13 @@ public class Parser {
 		if ("".equals(raw)) {
 			return null;
 		}
+
 		StringUtilities.checkCorrectnessLambdaExpression(raw);
 		Brackets brackets = new Brackets(raw);
 		raw = StringUtilities.killOuterBrackets(raw, brackets);
 		brackets = new Brackets(raw);
 
-		System.out.println("parse:" + raw + ":");
+		//System.out.println("parse:" + raw + ":");
 
 		if (raw.indexOf('.') == -1 && raw.indexOf(' ') == -1 && raw.indexOf('(') == -1) {
 			return getOneProposeVertexCleanString(raw);
@@ -67,7 +68,7 @@ public class Parser {
 			switch (raw.charAt(i)) {
 				case '.': {
 					deque.addFirst(parseString(raw.substring(i + 1, k)));
-					System.out.println("inner parse:" + raw + ":   i=" + i + ", \'" + raw.charAt(i) + "\'");
+					//System.out.println("inner parse:" + raw + ":   i=" + i + ", \'" + raw.charAt(i) + "\'");
 					Vertex v = mergeVertexes(deque);
 					String x = StringUtilities.getNameBackwards(raw, i - 1);
 					Vertex t = new Vertex();
@@ -120,9 +121,9 @@ public class Parser {
 			sum.countHashAndCo();
 			v = sum;                            //TODO examine this point
 		}
-		if (v != null) {
+		/*if (v != null) {
 			System.out.println("finish merge:" + v.toString());
-		}
+		}*/
 		return v;
 	}
 
