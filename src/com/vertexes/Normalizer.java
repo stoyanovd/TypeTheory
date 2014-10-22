@@ -1,6 +1,5 @@
 package com.vertexes;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -8,13 +7,13 @@ import java.util.Map;
  */
 public class Normalizer {
 
+	public static int reductCounts = 0;
+	public static int getNormCounts = 0;
+	public static int dfsCounter = 0;
+	public static int dfsMaps = 0;
 	public Vertex ans;
-	private HashMap<Vertex, Vertex> doneMap;
-	private HashMap<Vertex, Integer> dfsMap;
 
 	public Normalizer(Vertex v) {
-		doneMap = new HashMap<>();
-		dfsMap = new HashMap<>();
 
 		ans = new Vertex(v);
 		ans = getNorm(ans);
@@ -30,21 +29,23 @@ public class Normalizer {
 		System.out.println(dfs_findRedexes(ans));
 	}
 
-	private boolean hasRedex(Vertex t) {
+	private static boolean hasRedex(Vertex t) {
 		return (dfs_findRedexes(t) != -1);
 	}
 
-	private int dfs_findRedexes(Vertex t) {
+	private static int dfs_findRedexes(Vertex t) {
 		if (t == null) {
 			return -1;
 		}
+		dfsCounter++;
+		if (MyCache.dfsMap.containsKey(t)) {
+			dfsMaps++;
+			return MyCache.dfsMap.get(t);
+		}
 		if (t.isRedex()) {
+			MyCache.dfsMap.put(t, 0);
 			return 0;
 		}
-		if (dfsMap.containsValue(t)) {
-			return dfsMap.get(t);
-		}
-
 		int x = -1;
 		if (t.left != null) {
 			x = dfs_findRedexes(t.left);
@@ -69,7 +70,7 @@ public class Normalizer {
 		} else {
 			a = (-x * y);
 		}
-		dfsMap.put(t, a);
+		MyCache.dfsMap.put(t, a);
 		return a;
 	}
 
@@ -94,43 +95,55 @@ public class Normalizer {
 				innerUnify(v.right, map, i + 1);
 				map.remove(v.left.propose);
 				v.left.propose = "-" + i;                                //to   step
+				v.left.countHashAndCo(false);
 			}
 		}
-		v.countHashAndCo();
+		v.countHashAndCo(false);
 	}
 
-	private Vertex reductRedex(Vertex redex) {
+	private static Vertex reductRedex(Vertex redex) {
+		reductCounts++;
+		/*if (reductCounts % 1000 == 0) {
+			System.out.println("Ohh reductions : " + reductCounts);
+			System.out.println("dfs : " + dfsCounter + "    cur : " + (1.0 * dfsMaps) / dfsCounter);
+			System.out.println("decor : " + NamesDecorator.namesDecoratorCounter + "    cur : " +
+					(1.0 * NamesDecorator.namesDecoratorMapCounter) / NamesDecorator.namesDecoratorCounter);
+			System.out.println("decor pairs: " + NamesDecorator.namesDecoratorPairsCounter + "    cur : " +
+					(1.0 * NamesDecorator.namesDecoratorPairsMapCounter) / NamesDecorator.namesDecoratorPairsCounter);
+		}*/
 		NamesDecorator namesDecorator = new NamesDecorator(redex.left, redex.right);
 		Vertex a = namesDecorator.nice.right;
 		Vertex b = namesDecorator.nice2;
 		Substitution substitution = new Substitution(namesDecorator.nice.left.propose, b);
 		if (!substitution.makeSubstitution(a)) {
-			System.out.println("This not nice error with same names.\n\n");
+			System.out.println("This not nice error with same names.\n" + substitution.changedVertex.propose);
 			throw new NullPointerException();
 		}
 		return substitution.changedVertex;
 	}
 
-	private Vertex getNorm(Vertex v) {
 
-		System.out.println("getNorm, begin: " + v.toString());
-		System.out.println("dfs " + dfs_findRedexes(v));
-
+	private static Vertex getNorm(Vertex v) {
+		//System.out.println("getNorm, begin: " + v.toString());
+		//System.out.println("dfs " + dfs_findRedexes(v));
+		getNormCounts++;
+		if (getNormCounts % 5000 == 0) {
+			System.out.println("getNorm : " + getNormCounts + "     reducts : " + reductCounts);
+		}
 		if (!hasRedex(v)) {                                                            //TODO-speed    Maybe it is nice to play with maps
 			return v;
 		}
 
-		if (doneMap.containsValue(v)) {
-			return doneMap.get(v);
+		if (MyCache.doneMap.containsValue(v)) {
+			return new Vertex(MyCache.doneMap.get(v));
 		}
-
 		if (dfs_findRedexes(v) == 0) {
 			Vertex t = reductRedex(v);
-			System.out.println("Reduct from : " + v.toString());
-			System.out.println("To : " + t.toString());
+			//System.out.println("Reduct from : " + v.toString());
+			//System.out.println("To : " + t.toString());
 			Vertex p = getNorm(t);
-			doneMap.put(v, p);
-			doneMap.put(t, p);
+			MyCache.doneMap.put(v, p);
+			MyCache.doneMap.put(t, p);
 			return p;
 		}
 
@@ -145,9 +158,9 @@ public class Normalizer {
 		} else {
 			t.right = getNorm(v.right);
 		}
-		t.countHashAndCo();
+		t.countHashAndCo(false);
 		t = getNorm(t);
-		doneMap.put(v, t);
+		MyCache.doneMap.put(v, t);
 		return t;
 	}
 }

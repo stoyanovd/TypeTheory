@@ -36,7 +36,7 @@ public class Parser {
 		if (v.propose.length() != raw.length()) {
 			throw new IncorrectLambdaExpressionException("\"" + raw + "\" is thought to be a propose, but contains not only \"" + v.propose + "\"");
 		}
-		v.countHashAndCo();
+		v.countHashAndCo(false);
 		return v;
 	}
 
@@ -75,7 +75,7 @@ public class Parser {
 					t.right = v;
 					t.left = getOneProposeVertex(x, true);
 					t.operation = 'L';
-					t.countHashAndCo();
+					t.countHashAndCo(false);
 					deque.addFirst(t);
 					i -= x.length() + 1;
 					k = i;
@@ -118,7 +118,7 @@ public class Parser {
 			sum.left = v;
 			sum.right = t;
 			sum.operation = 'A';
-			sum.countHashAndCo();
+			sum.countHashAndCo(false);
 			v = sum;                            //TODO examine this point
 		}
 		/*if (v != null) {

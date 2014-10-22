@@ -1,5 +1,6 @@
 package com.vertexes;
 
+import com.patterns.Numeral;
 import com.supports.Initials;
 import com.utils.Equality;
 
@@ -52,43 +53,80 @@ public class Vertex {
 		} else {
 			this.args = new ArrayList<>(v.args);
 		}
-		countHashAndCo();
+		countHashAndCo(false);
 	}
 
 	public static Set<String> getFreeProposes(Vertex v) {
 
+		Set<String> ans = new HashSet<>();
+		getFreeProposesInner(v, new HashSet<>(), ans);
+		return ans;
+	}
+
+	private static void getFreeProposesInner(Vertex v, Set<String> bounded, Set<String> ansNames) {
+
 		switch (v.operation) {
 			case 'N':
-				return new HashSet<>();                //  or null,  maybe????
+				throw new NullPointerException();                //  or null,  maybe????
 
 			case 'L': {
-				Set<String> x = new HashSet<>(getFreeProposes(v.right));
-				x.remove(v.left.propose);
-				return x;
+				boolean was = bounded.contains(v.left.propose);
+				if (!was) {
+					bounded.add(v.left.propose);
+				}
+				getFreeProposesInner(v.right, bounded, ansNames);
+				if (!was) {
+					bounded.remove(v.left.propose);
+				}
+				return;
 			}
 			case 'A': {
-				Set<String> x = new HashSet<>(getFreeProposes(v.left));
-				x.addAll(getFreeProposes(v.right));
-				return x;
+				getFreeProposesInner(v.left, bounded, ansNames);
+				getFreeProposesInner(v.right, bounded, ansNames);
+				return;
 			}
 
 			case 'V': {
-				Set<String> x = new HashSet<>();
-				x.add(v.propose);
-				return x;
+				if (!bounded.contains(v.propose)) {
+					ansNames.add(v.propose);
+				}
 			}
-			case 'F':
-				return null;            //TODO-func
 		}
-		return null;
 	}
 
-	public void countHashAndCo() {
-		if (left != null) {
-			left.countHashAndCo();
+	//  We supposed a, b - with correct hash
+	public static Vertex makeApplication(Vertex a, Vertex b) {
+		Vertex v = new Vertex();
+		v.operation = 'A';
+		v.left = a;
+		v.right = b;
+		v.countHashAndCo(false);
+		return v;
+	}
+
+	//  We supposed a, b - with correct hash
+	public static Vertex makeAbstraction(Vertex a, Vertex b) {
+		Vertex v = new Vertex();
+		v.operation = 'L';
+		v.left = a;
+		v.right = b;
+		v.countHashAndCo(false);
+		return v;
+	}
+
+	public static Vertex copyVertex(Vertex v) {
+		if (v == null) {
+			return null;
 		}
-		if (right != null) {
-			right.countHashAndCo();
+		return new Vertex(v);
+	}
+
+	public void countHashAndCo(boolean goRecursive) {
+		if (goRecursive && left != null) {
+			left.countHashAndCo(true);
+		}
+		if (goRecursive && right != null) {
+			right.countHashAndCo(true);
 		}
 
 		switch (operation) {
@@ -117,33 +155,16 @@ public class Vertex {
 		}
 	}
 
-	public static Vertex makeApplication(Vertex a, Vertex b) {
-		Vertex v = new Vertex();
-		v.operation = 'A';
-		v.left = a;
-		v.right = b;
-		v.countHashAndCo();
-		return v;
-	}
-
-	public static Vertex makeAbstraction(Vertex a, Vertex b) {
-		Vertex v = new Vertex();
-		v.operation = 'L';
-		v.left = a;
-		v.right = b;
-		v.countHashAndCo();
-		return v;
-	}
-
 	public boolean isRedex() {
 		return (operation == 'A' && left.operation == 'L');
 	}
 
-	public static Vertex copyVertex(Vertex v) {
-		if (v == null) {
-			return null;
+	public String toStringOrNumeral() {
+		Integer x = Numeral.getInteger(this);
+		if (x != null) {
+			return ("" + x);
 		}
-		return new Vertex(v);
+		return toString();
 	}
 
 	@Override
@@ -208,6 +229,11 @@ public class Vertex {
 			return equals((Vertex) v);
 		}
 		return (this == v);
+	}
+
+	public boolean equalsWithRenaming(Vertex v) {
+		NamesDecorator namesDecorator = new NamesDecorator(this, v);
+		return namesDecorator.nice.equals(namesDecorator.nice2);
 	}
 
 }

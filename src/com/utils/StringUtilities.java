@@ -30,8 +30,9 @@ public class StringUtilities {
 		//System.out.println("_:" + raw + ":");
 		StringBuilder stringBuilder = new StringBuilder();
 		for (int i = 0; i < raw.length(); i++) {
-			if (raw.charAt(i) != ' ' || (i != 0 && stringBuilder.charAt(i - 1) != '\\' &&
-					stringBuilder.charAt(i - 1) != '.' && stringBuilder.charAt(i - 1) != ' '))   //TODO is it all situations???
+			if (raw.charAt(i) != ' ' || (i != 0 && stringBuilder.charAt(stringBuilder.length() - 1) != '\\' &&
+					stringBuilder.charAt(stringBuilder.length() - 1) != '.' &&
+					stringBuilder.charAt(stringBuilder.length() - 1) != ' '))   //TODO is it all situations???
 			{
 				stringBuilder.append(raw.charAt(i));
 			}

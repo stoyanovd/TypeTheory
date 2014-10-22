@@ -46,7 +46,7 @@ public class Substitution {
 				openedLambdas.add(v.left.propose);
 				Vertex x = new Vertex(v);
 				x.right = makeVertex(v.right);            //CARE    mutable vertexes
-				x.countHashAndCo();
+				x.countHashAndCo(false);
 				openedLambdas.remove(openedLambdas.size() - 1);
 				return x;
 			}
@@ -54,7 +54,7 @@ public class Substitution {
 				Vertex x = new Vertex(v);
 				x.left = makeVertex(v.left);
 				x.right = makeVertex(v.right);
-				x.countHashAndCo();
+				x.countHashAndCo(false);
 				return x;
 			}
 			case 'V': {
