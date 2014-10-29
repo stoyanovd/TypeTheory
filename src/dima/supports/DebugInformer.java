@@ -11,14 +11,16 @@ public class DebugInformer {
 
 	public static int reductCounts = 0;
 	public static int reductCountsMap = 0;
-	public static int normCounts = 0;
-	public static int normCountsMap = 0;
+	public static int stepCounts = 0;
+	public static int stepCountsMap = 0;
 	public static int dfsCounts = 0;
 	public static int dfsCountsMap = 0;
 	public static int namesDecoratorCounts = 0;
 	public static int namesDecoratorCountsMap = 0;
 	public static int namesDecoratorPairsCounts = 0;
 	public static int namesDecoratorPairsCountsMap = 0;
+
+	public static int gettingNormBigStep = 0;
 
 	public static int maxLambdaLength = 0;
 
@@ -27,8 +29,9 @@ public class DebugInformer {
 	}
 
 	public static void printStatistics() {
-		System.out.println("normCounts : " + normCounts + "     quotient : " + getQuotient(normCountsMap, normCounts));
-		System.out.println("reductCounts : " + reductCounts + "     quotient (dsuMap) : " + getQuotient(reductCountsMap, reductCounts));
+		System.out.println("STEP : " + gettingNormBigStep);
+		System.out.println("stepCounts : " + stepCounts + "     quotient : " + getQuotient(stepCountsMap, stepCounts));
+		System.out.println("reductCounts : " + reductCounts + "     quotient : " + getQuotient(reductCountsMap, reductCounts));
 		System.out.println("dfsCounts : " + dfsCounts + "     quotient : " + getQuotient(dfsCountsMap, dfsCounts));
 		System.out.println("namesDecoratorCounts : " + namesDecoratorCounts + "     quotient : " + getQuotient(namesDecoratorCountsMap, namesDecoratorCounts));
 		System.out.println("namesDecoratorPairsCounts : " + namesDecoratorPairsCounts + "     quotient : "
@@ -45,7 +48,7 @@ public class DebugInformer {
 
 	public static void printStatisticsIfNorm() {
 		if (Configuration.DEBUG_MODE) {
-			if (normCounts % 5000 == 0) {
+			if (stepCounts % 5000 == 0) {
 				printStatistics();
 			}
 		}

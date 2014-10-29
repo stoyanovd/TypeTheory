@@ -1,9 +1,8 @@
 package dima.vertexes;
 
 /**
- * Created by dima on 15.10.14.
+ * Created  by dima  on 15.10.14.
  */
-
 public class SKITransformer {
 
 	public static Vertex getSKI(Vertex v) {

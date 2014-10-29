@@ -13,7 +13,7 @@ import dima.vertexes.Vertex;
 import java.io.IOException;
 
 /**
- * Created by dima on 01.10.14.
+ * Created  by dima  on 01.10.14.
  */
 public class Task4 {
 

@@ -1,5 +1,6 @@
-package dima.utils; /**
- * Created by dima on 11.09.14.
+package dima.utils;
+/**
+ * Created  by dima  on 11.09.14.
  */
 
 import dima.Configuration;
@@ -12,8 +13,8 @@ import java.io.PrintWriter;
 
 public class MyPrinter {
 
-	String outputFile;
-	PrintWriter out;
+	private String outputFile;
+	private PrintWriter out;
 
 	public MyPrinter(String _outputFile) {
 		outputFile = _outputFile;
@@ -55,7 +56,7 @@ public class MyPrinter {
 	}
 
 
-	public static void printLambdaExpressionAsTree(Vertex v) throws FileNotFoundException, WrongBracketsException {
+	public static void printLambdaExpressionAsTree(Vertex v) throws WrongBracketsException {
 
 		String s = v.toString();
 		Brackets brackets = new Brackets(s);

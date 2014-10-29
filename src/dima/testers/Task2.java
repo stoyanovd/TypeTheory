@@ -12,9 +12,8 @@ import java.io.IOException;
 import java.util.TreeSet;
 
 /**
- * Created by dima on 16.09.14.
+ * Created  by dima  on 16.09.14.
  */
-
 public class Task2 {
 
 	public static void main(String arg[]) {
@@ -33,7 +32,7 @@ public class Task2 {
 			System.out.println("\n");
 			TreeSet<String> proposes = new TreeSet<>(Vertex.getFreeProposes(v));
 			for (String s : proposes) {
-				myPrinter.printlnString(s);                //TODO  It is sorted order, isn't it?
+				myPrinter.printlnString(s);
 			}
 			MyPrinter.printLambdaExpressionAsTree(v);
 

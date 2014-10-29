@@ -6,14 +6,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * Created by dima on 10.09.14.
+ * Created  by dima  on 10.09.14.
  */
 public class StringUtilities {
 
 
-	public static Collection<Character> ALLOWEDSYMBOLS = new ArrayList<Character>();
+	public static Collection<Character> ALLOWEDSYMBOLS = new ArrayList<>();
 
-	public static String unifyWhitespaces(String raw) {
+	private static String unifyWhitespaces(String raw) {
 		StringBuilder stringBuilder = new StringBuilder();
 		for (int i = 0; i < raw.length(); i++) {
 			if (Character.isWhitespace(raw.charAt(i)))        //TODO check if it is comprehensive
@@ -26,7 +26,7 @@ public class StringUtilities {
 		return stringBuilder.toString();
 	}
 
-	public static String killExcessWhitespaces(String raw) {
+	private static String killExcessWhitespaces(String raw) {
 		//System.out.println("_:" + raw + ":");
 		StringBuilder stringBuilder = new StringBuilder();
 		for (int i = 0; i < raw.length(); i++) {
@@ -74,9 +74,9 @@ public class StringUtilities {
 		return raw.substring(k, raw.length() - k);
 	}
 
-	public static String getName(String raw, int start) throws IncorrectLambdaExpressionException {
+	public static String getName(String raw) throws IncorrectLambdaExpressionException {
 		int k = 0;
-		for (int i = start; i < raw.length(); i++) {
+		for (int i = 0; i < raw.length(); i++) {
 			if (Character.isLetterOrDigit(raw.charAt(i)) || raw.charAt(i) == '\'') {
 				k++;
 			} else {
@@ -84,9 +84,9 @@ public class StringUtilities {
 			}
 		}
 		if (k == 0) {
-			throw new IncorrectLambdaExpressionException("It is thought to be a propose in \"" + raw + "\" from " + start + " position (0-indexed).");
+			throw new IncorrectLambdaExpressionException("It is thought to be a propose in \"" + raw + "\" from " + 0 + " position (0-indexed).");
 		}
-		return raw.substring(start, start + k);
+		return raw.substring(0, k);
 	}
 
 	public static String getNameBackwards(String raw, int endInclusive) throws IncorrectLambdaExpressionException {

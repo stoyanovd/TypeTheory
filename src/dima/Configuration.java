@@ -1,7 +1,7 @@
 package dima;
 
 /**
- * Created by dima on 11.09.14.
+ * Created  by dima  on 11.09.14.
  */
 public class Configuration {
 

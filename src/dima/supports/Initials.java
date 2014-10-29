@@ -6,19 +6,19 @@ import java.util.Collection;
 import java.util.Random;
 
 /**
- * Created by dima  on 11.09.14.
+ * Created  by dima   on 11.09.14.
  */
 public class Initials {
 
-	public static final Random random = new Random();
-	public static int HASHPRIMESSIZE = 20000;
-	public static long HASHPRIMES[] = new long[HASHPRIMESSIZE];
-	public static long HASHPRIME = 17239;
-	public static Collection<Character> ALLOWEDSYMBOLS = StringUtilities.ALLOWEDSYMBOLS;
+	private static final Random random = new Random();
+	private static int HASHPRIMESSIZE = 20000;
+	private static long[] HASHPRIMES = new long[HASHPRIMESSIZE];
+	private static Collection<Character> ALLOWEDSYMBOLS = StringUtilities.ALLOWEDSYMBOLS;
 
 	public static void init() {
 		HASHPRIMES[0] = 1;
 		for (int i = 1; i < HASHPRIMESSIZE; i++) {
+			long HASHPRIME = 17239;
 			HASHPRIMES[i] = HASHPRIMES[i - 1] * HASHPRIME;
 		}
 

@@ -4,7 +4,7 @@ import dima.utils.exceptions.IncorrectLambdaExpressionException;
 import dima.utils.exceptions.WrongBracketsException;
 
 /**
- * Created by dima on 15.10.14.
+ * Created  by dima  on 15.10.14.
  */
 public final class SKITemplates {
 

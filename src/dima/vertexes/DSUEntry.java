@@ -6,15 +6,21 @@ package dima.vertexes;
 class DSUEntry {
 	private DSUEntry next;
 	private Vertex fullVertex;
+	private Vertex cur;
 
-	DSUEntry() {
+	private DSUEntry(Vertex v) {
 		next = this;
 		fullVertex = null;
+		cur = v;
+	}
+
+	public DSUEntry showNext() {
+		return next;
 	}
 
 	public static void tryInitDSUEntry(Vertex v) {
 		if (!MyCache.dsuMap.containsKey(v)) {
-			MyCache.dsuMap.put(v, new DSUEntry());
+			MyCache.dsuMap.put(v, new DSUEntry(v));
 		}
 	}
 
@@ -27,6 +33,15 @@ class DSUEntry {
 			throw new NullPointerException("We try to put to dsuMap vertex that is not fully reduced.");
 		}
 		dsuEntry.fullVertex = new Vertex(v);
+	}
+
+	public static void setFull(Vertex v, Vertex simplified) {
+		DSUEntry dsuEntry = MyCache.dsuMap.get(v);
+		dsuEntry.simplify();
+		/*if (Normalizer.hasRedex(v)) {
+			throw new NullPointerException("We try to put to dsuMap vertex that is not fully reduced.");
+		}*/
+		dsuEntry.fullVertex = new Vertex(simplified);
 	}
 
 	//Vertexes are already in dsuMap
@@ -50,10 +65,27 @@ class DSUEntry {
 	}
 
 	//	Vertex is already in dsuMap
+	public static Vertex getNewNextVertex(Vertex v) {
+		DSUEntry dsuEntry = MyCache.dsuMap.get(v);
+		dsuEntry.simplify();
+		if (dsuEntry.next == dsuEntry) {
+			return null;
+		}
+		return new Vertex(dsuEntry.next.cur);
+	}
+
+	//	Vertex is already in dsuMap.
 	public static boolean hasFullVertex(Vertex v) {
 		DSUEntry dsuEntry = MyCache.dsuMap.get(v);
 		dsuEntry.simplify();
-		return dsuEntry.fullVertex != null;
+		return (dsuEntry.fullVertex != null);
+	}
+
+	//	Vertex is already in dsuMap
+	public static boolean hasNextVertex(Vertex v) {
+		DSUEntry dsuEntry = MyCache.dsuMap.get(v);
+		dsuEntry.simplify();
+		return dsuEntry.next != dsuEntry;
 	}
 
 	private void simplify() {
@@ -79,10 +111,13 @@ class DSUEntry {
 
 		DSUEntry dsuEntry = (DSUEntry) o;
 
-		if (!next.equals(dsuEntry.next)) {
+		if (!cur.equals(dsuEntry.cur)) {
 			return false;
 		}
 		if (!fullVertex.equals(dsuEntry.fullVertex)) {
+			return false;
+		}
+		if (!next.equals(dsuEntry.next)) {
 			return false;
 		}
 
@@ -93,6 +128,7 @@ class DSUEntry {
 	public int hashCode() {
 		int result = next.hashCode();
 		result = 31 * result + fullVertex.hashCode();
+		result = 31 * result + cur.hashCode();
 		return result;
 	}
 }

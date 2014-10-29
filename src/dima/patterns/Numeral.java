@@ -7,6 +7,8 @@ import dima.vertexes.Vertex;
  */
 public class Numeral {
 
+	public static final String NOmega = " ((\\x.x x) (\\x.x x)) ";
+
 	public static final String LPlus = " (\\n.\\m.\\s.\\z.n s (m s z)) ";
 	public static final String LMul = " (\\n.\\m.\\s.n (m s)) ";
 	public static final String LPower = " (\\n.\\m.\\s.\\z.m n s z) ";

@@ -2,10 +2,8 @@ package dima.vertexes;
 
 import dima.supports.DebugInformer;
 
-import java.util.Stack;
-
 /**
- * Created by dima on 01.10.14.
+ * Created  by dima on 01.10.14.
  */
 
 public class Normalizer {
@@ -15,7 +13,8 @@ public class Normalizer {
 	public Normalizer(Vertex v) {
 
 		ans = new Vertex(v);
-		ans = getNorm(ans);
+		ans = tryGetNorm(ans);
+		//ans = tryGetNormRecursive(ans);
 
 		System.out.println("ans:");
 		System.out.println(ans.toString());
@@ -42,7 +41,7 @@ public class Normalizer {
 			return MyCache.dfsMap.get(t);
 		}
 		if (t.isRedex()) {
-			MyCache.dfsMap.put(t, 0);
+			MyCache.dfsMap.put(new Vertex(t), 0);
 			return 0;
 		}
 		int x = dfsFindRedexes(t.left);
@@ -56,88 +55,114 @@ public class Normalizer {
 		} else {
 			a = (-x * y) + 1;
 		}
-		MyCache.dfsMap.put(t, a);
+		MyCache.dfsMap.put(new Vertex(t), a);
+
 		return a;
 	}
 
-	private static Vertex reductRedex(Vertex redex) {
+	private static Vertex reductRedex(Vertex v) {
 		DebugInformer.reductCounts++;
-		Vertex newFullVertex = DSUEntry.getNewFullVertex(redex);
-		if (newFullVertex != null) {
+		Vertex redex = new NiceVertex(v);
+		if (MyCache.redexMap.containsKey(redex)) {
 			DebugInformer.reductCountsMap++;
-			return newFullVertex;
+			return MyCache.redexMap.get(redex);
 		}
+		//-------------------------
 		NamesDecorator namesDecorator = new NamesDecorator(redex.left, redex.right);
 		Vertex leftNice = namesDecorator.getNewNice();
 		Vertex rightNice = namesDecorator.getNewNice2();
-		Substitution substitution = new Substitution(leftNice.left.propose, rightNice);
+		//-------------------------
+		Vertex ans = Substitution.getNewSubstitutionVertex(leftNice.left.propose, rightNice, leftNice.right);
+		/*Substitution substitution = new Substitution(leftNice.left.propose, rightNice);
 		if (!substitution.makeSubstitution(leftNice.right)) {
 			System.out.println("This not nice error with same names.\n" + substitution.getNewSubstituted().propose);
 			throw new NullPointerException();
-		}
-		return substitution.getNewSubstituted();
+		}*/
+		MyCache.redexMap.put(redex, new NiceVertex(ans));
+		return ans;
 	}
 
-	private static Vertex getNorm(Vertex v) {
-		Stack<Vertex> stack = new Stack<>();
-		stack.add(v);
-		while (!stack.isEmpty()) {
-			Vertex t = stack.pop();
-			produceNormInQueue(t, stack);
+	private static Vertex tryGetNorm(Vertex input) {
+
+		Vertex v = input;
+		int curDfs;
+
+		while (true) {
+			v = new NiceVertex(v);
+			curDfs = dfsFindRedexes(v);
+			if (curDfs < 0) {
+				return v;
+			}
+			//System.out.println("Step : " + v);
+			//System.out.println("curDfs = " + curDfs);
+			DebugInformer.gettingNormBigStep++;
+			if (DebugInformer.gettingNormBigStep % 100 == 0) {
+				DebugInformer.printStatistics();
+				System.gc();
+			}
+			if (curDfs == 0) {
+				v = reductRedex(v);
+				continue;
+			}
+			Vertex t = v;
+			for (; ; ) {
+				//System.out.println("T: " + t);
+				//System.out.println("l : " + dfsFindRedexes(t.left) + "  r : " + dfsFindRedexes(t.right) + "   t : " + dfsFindRedexes(t));
+				int x = dfsFindRedexes(t.left);
+				if (x == 0) {
+					t.left = reductRedex(t.left);
+					break;
+				}
+				if (x > 0) {
+					t = t.left;
+					continue;
+				}
+				x = dfsFindRedexes(t.right);
+				if (x == 0) {
+					t.right = reductRedex(t.right);
+					break;
+				}
+				t = t.right;
+			}
 		}
-		return DSUEntry.getNewFullVertex(v);
 	}
 
-	private static void produceNormInQueue(Vertex v, Stack<Vertex> stack) {
-		DebugInformer.normCounts++;
-		DebugInformer.printStatisticsIfNorm();
-
-		DSUEntry.tryInitDSUEntry(v);
-
-		if (DSUEntry.hasFullVertex(v)) {
-			DebugInformer.normCountsMap++;
-			return;
+	private static void bigStep() {
+		DebugInformer.gettingNormBigStep++;
+		if (DebugInformer.gettingNormBigStep % 100 == 0) {
+			DebugInformer.printStatistics();
+			System.gc();
 		}
+	}
 
-		//DebugInformer.maxLambdaLength = Math.max(DebugInformer.maxLambdaLength, v.toString().length());
-
-		if (!hasRedex(v)) {
-			DSUEntry.setFull(v);
-			return;
+	private static Vertex tryGetNormRecursive(Vertex input) {
+		Vertex v = new NiceVertex(input);
+		while (dfsFindRedexes(v) >= 0) {
+			bigStep();
+			v = nextStepNewVertex(v);
 		}
+		return v;
+	}
 
+	private static Vertex nextStepNewVertex(Vertex v) {
+		DebugInformer.stepCounts++;
+		if (MyCache.stepMap.containsKey(v)) {
+			DebugInformer.stepCountsMap++;
+			return new Vertex(MyCache.stepMap.get(v));
+		}
 		if (dfsFindRedexes(v) == 0) {
 			Vertex t = reductRedex(v);
-			DSUEntry.tryInitDSUEntry(t);
-			DSUEntry.union(v, t);
-			stack.push(v);
-			stack.push(t);
-			return;
+			MyCache.stepMap.put(new Vertex(v), new Vertex(t));
+			return t;
 		}
-
 		Vertex t = new Vertex(v);
-		int x = dfsFindRedexes(v.left);
-		int y = dfsFindRedexes(v.right);
-		boolean leftBetter = (x != -1 && (y == -1 || x <= y));
-		DSUEntry.tryInitDSUEntry(leftBetter ? t.left : t.right);
-		Vertex newFullVertex = DSUEntry.getNewFullVertex(leftBetter ? t.left : t.right);
-		if (newFullVertex == null) {
-			stack.push(v);
-			stack.push(leftBetter ? t.left : t.right);
-			if (stack.peek().equals(v)) {
-				throw new NullPointerException("OOOOh infinite cycle!");            //TODO  reformat this
-			}
-			return;
-		}
-		if (leftBetter) {
-			t.left = newFullVertex;
+		if (dfsFindRedexes(v.left) >= 0) {
+			t.left = new Vertex(nextStepNewVertex(v.left));
 		} else {
-			t.right = newFullVertex;
+			t.right = new Vertex(nextStepNewVertex(v.right));
 		}
 		t.countHashAndCo(false);
-		DSUEntry.tryInitDSUEntry(t);
-		DSUEntry.union(v, t);
-		stack.push(v);
-		stack.push(t);
+		MyCache.stepMap.put(new Vertex(v), new Vertex(t));
+		return t;
 	}
 }

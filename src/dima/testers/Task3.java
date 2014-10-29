@@ -12,9 +12,8 @@ import dima.vertexes.Vertex;
 import java.io.IOException;
 
 /**
- * Created by dima on 16.09.14.
+ * Created  by dima  on 16.09.14.
  */
-
 public class Task3 {
 
 	public static void main(String arg[]) {

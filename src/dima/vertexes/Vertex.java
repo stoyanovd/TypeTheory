@@ -228,7 +228,7 @@ public class Vertex {
 		if (v == null) {
 			return false;
 		}
-		if (v.getClass() == Vertex.class) {
+		if (v instanceof Vertex) {
 			return equals((Vertex) v);
 		}
 		return (this == v);

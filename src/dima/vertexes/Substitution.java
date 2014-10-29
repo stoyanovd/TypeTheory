@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Set;
 
 /**
- * Created by dima on 16.09.14.
+ * Created  by dima  on 16.09.14.
  */
 public class Substitution {
 
@@ -27,14 +27,10 @@ public class Substitution {
 	}
 
 
-	public Substitution(String propose, Vertex replacement, Vertex untouchablePlace) {
-		this.propose = propose;
-		this.replacement = replacement;
-		openedLambdas = new ArrayList<>();
-		changedVertex = null;
-		replacementFreeProposes = Vertex.getFreeProposes(replacement);
-
-		makeSubstitution(untouchablePlace);
+	public static Vertex getNewSubstitutionVertex(String propose, Vertex replacement, Vertex untouchablePlace) {
+		Substitution substitution = new Substitution(propose, replacement);
+		substitution.makeSubstitution(untouchablePlace);
+		return substitution.changedVertex;
 	}
 
 	public Vertex getNewSubstituted() {

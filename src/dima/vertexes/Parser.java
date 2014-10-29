@@ -10,31 +10,17 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /**
- * Created by dima on 16.09.14.
+ * Created  by dima  on 16.09.14.
  */
 public class Parser {
 
-
-	public static Vertex getOneProposeVertexCleanString(String _raw) throws IncorrectLambdaExpressionException, WrongBracketsException {
-		return getOneProposeVertex(_raw, true);
-	}
-
 	@SuppressWarnings("New Vertex or null is returned. (not link to old)")
-	public static Vertex getOneProposeVertex(String _raw, boolean cleanString) throws IncorrectLambdaExpressionException, WrongBracketsException {
-		String raw;
-		if (!cleanString) {
-			raw = StringUtilities.totallyTreatWhitespaces(_raw);
-			StringUtilities.checkCorrectnessLambdaExpression(raw);
-			Brackets brackets = new Brackets(raw);
-			raw = StringUtilities.killOuterBrackets(raw, brackets);
-		} else {
-			raw = _raw;
-		}
+	public static Vertex getOneProposeVertex(String rawWithOnlyPropose) throws IncorrectLambdaExpressionException, WrongBracketsException {
 		Vertex v = new Vertex();
 		v.operation = 'V';
-		v.propose = StringUtilities.getName(raw, 0);                            //TODO-speed
-		if (v.propose.length() != raw.length()) {
-			throw new IncorrectLambdaExpressionException("\"" + raw + "\" is thought to be a propose, but contains not only \"" + v.propose + "\"");
+		v.propose = StringUtilities.getName(rawWithOnlyPropose);                            //TODO-speed
+		if (v.propose.length() != rawWithOnlyPropose.length()) {
+			throw new IncorrectLambdaExpressionException("\"" + rawWithOnlyPropose + "\" is thought to be a propose, but contains not only \"" + v.propose + "\"");
 		}
 		v.countHashAndCo(false);
 		return v;
@@ -58,7 +44,7 @@ public class Parser {
 		//System.out.println("parse:" + raw + ":");
 
 		if (raw.indexOf('.') == -1 && raw.indexOf(' ') == -1 && raw.indexOf('(') == -1) {
-			return getOneProposeVertexCleanString(raw);
+			return getOneProposeVertex(raw);
 		}
 
 		Deque<Vertex> deque = new LinkedList<>();
@@ -73,7 +59,7 @@ public class Parser {
 					String x = StringUtilities.getNameBackwards(raw, i - 1);
 					Vertex t = new Vertex();
 					t.right = v;
-					t.left = getOneProposeVertex(x, true);
+					t.left = getOneProposeVertex(x);
 					t.operation = 'L';
 					t.countHashAndCo(false);
 					deque.addFirst(t);

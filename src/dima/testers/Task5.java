@@ -12,7 +12,7 @@ import dima.vertexes.Vertex;
 import java.io.IOException;
 
 /**
- * Created by dima on 15.10.14.
+ * Created  by dima  on 15.10.14.
  */
 public class Task5 {
 
@@ -38,7 +38,7 @@ public class Task5 {
 
 	}
 
-	static void checkDiff(Vertex t) throws IOException, WrongBracketsException, IncorrectLambdaExpressionException {
+	public static void checkDiff(Vertex t) throws IOException, WrongBracketsException, IncorrectLambdaExpressionException {
 		MyReader myReader = new MyReader("tests/answer.out");
 
 		String raw = myReader.readString();

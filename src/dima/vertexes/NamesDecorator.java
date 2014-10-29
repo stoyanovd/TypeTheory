@@ -47,7 +47,7 @@ public class NamesDecorator {
 		makeNiceNames(nice, new HashMap<>());
 		nice2 = new Vertex(t);
 		makeNiceNames(nice2, new HashMap<>());
-		MyCache.nicePairsMap.put(new Pair<>(v, t), new Pair<>(new Vertex(nice), new Vertex(nice2)));
+		MyCache.nicePairsMap.put(new Pair<>(v, t), new Pair<>(nice, nice2));
 	}
 
 	public Vertex getNewNice() {
@@ -75,8 +75,7 @@ public class NamesDecorator {
 					return;
 				}
 				if (!freeProposes.contains(t.propose)) {
-					System.out.println("We don't know this propose: " + t.propose);
-					throw new NullPointerException();
+					throw new NullPointerException("We don't know this propose: " + t.propose);
 				}
 			}
 			case 'A': {
