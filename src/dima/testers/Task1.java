@@ -15,26 +15,26 @@ import java.io.IOException;
  */
 public class Task1 {
 
-	public static void main(String arg[]) {
+    public static void main(String arg[]) {
 
-		try {
-			Initials.init();
-			MyReader myReader = new MyReader("tests/task1.in");
-			MyPrinter myPrinter = new MyPrinter("tests/task1.out");
+        try {
+            Initials.init();
+            MyReader myReader = new MyReader("tests/task1.in");
+            MyPrinter myPrinter = new MyPrinter("tests/task1.out");
 
-			String raw = myReader.readString();
-			System.out.println("This was obtained after reading and initial simplify:\n\"" + raw + "\"\n");
+            String raw = myReader.readString();
+            System.out.println("This was obtained after reading and initial simplify:\n\"" + raw + "\"\n");
 
 
-			Vertex v = Parser.parseString(raw);
-			myPrinter.printLambdaExpression(v);
-			System.out.println();
-			MyPrinter.printLambdaExpressionAsTree(v);
+            Vertex v = Parser.parseString(raw);
+            myPrinter.printLambdaExpression(v);
+            System.out.println();
+            MyPrinter.printLambdaExpressionAsTree(v);
 
-		} catch (WrongBracketsException | IncorrectLambdaExpressionException | IOException e) {
-			System.out.println(e.toString());
-			e.printStackTrace();
-		}
+        } catch (WrongBracketsException | IncorrectLambdaExpressionException | IOException e) {
+            System.out.println(e.toString());
+            e.printStackTrace();
+        }
 
-	}
+    }
 }

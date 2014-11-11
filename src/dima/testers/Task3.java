@@ -16,35 +16,37 @@ import java.io.IOException;
  */
 public class Task3 {
 
-	public static void main(String arg[]) {
+    public static void main(String arg[]) {
 
-		try {
-			Initials.init();
-			MyReader myReader = new MyReader("tests/task3.in");
-			MyPrinter myPrinter = new MyPrinter("tests/task3.out");
+        try {
+            Initials.init();
+            MyReader myReader = new MyReader("tests/task3.in");
+            MyPrinter myPrinter = new MyPrinter("tests/task3.out");
 
-			String raw = myReader.readString();
+            String raw = myReader.readString();
 
-			if (!raw.contains("[")) {
-				myPrinter.printlnString("There isn't [ in input.\nFormat is    expr[x:=expr]");
-				return;
-			}
+            if (!raw.contains("[")) {
+                myPrinter.printlnString("There isn't [ in input.\nFormat is    expr[x:=expr]");
+                return;
+            }
 
-			Vertex v = Parser.parseString(raw.substring(0, raw.indexOf('[')));
-			Substitution substitution = new Substitution(raw.substring(raw.indexOf('[') + 1, raw.indexOf(":=")),
-					Parser.parseString(raw.substring(raw.indexOf(":=") + 2, raw.indexOf(']'))));
+            Vertex v = Parser.parseString(raw.substring(0, raw.indexOf('[')));
+            Substitution substitution = new Substitution(raw.substring(raw.indexOf('[') + 1, raw.indexOf(":=")),
+                    Parser.parseString(raw.substring(raw.indexOf(":=") + 2, raw.indexOf(']'))));
 
-			if (!substitution.makeSubstitution(v)) {
+            //Delete sth
+/*
+            if (!substitution.makeSubstitution(v)) {
 				myPrinter.printlnString("Нет свободы для подстановки для переменной " + substitution.getNewSubstituted().propose + ".");
 			} else {
 				myPrinter.printLambdaExpression(substitution.getNewSubstituted());
 			}
+*/
 
+        } catch (WrongBracketsException | IncorrectLambdaExpressionException | IOException e) {
+            System.out.println(e.toString());
+            e.printStackTrace();
+        }
 
-		} catch (WrongBracketsException | IncorrectLambdaExpressionException | IOException e) {
-			System.out.println(e.toString());
-			e.printStackTrace();
-		}
-
-	}
+    }
 }

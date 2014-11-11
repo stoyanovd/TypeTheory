@@ -16,35 +16,35 @@ import java.io.IOException;
  */
 public class Task5 {
 
-	public static void main(String arg[]) {
+    public static void main(String arg[]) {
 
-		try {
-			Initials.init();
-			MyReader myReader = new MyReader("tests/task5.in");
-			MyPrinter myPrinter = new MyPrinter("tests/task5.out");
+        try {
+            Initials.init();
+            MyReader myReader = new MyReader("tests/task5.in");
+            MyPrinter myPrinter = new MyPrinter("tests/task5.out");
 
-			String raw = myReader.readString();
+            String raw = myReader.readString();
 
-			Vertex v = Parser.parseString(raw);
-			Vertex t = SKITransformer.getSKI(v);
-			myPrinter.printLambdaExpression(t);
+            Vertex v = Parser.parseString(raw);
+            Vertex t = SKITransformer.getSKI(v);
+            myPrinter.printLambdaExpression(t);
 
-			checkDiff(t);
+            checkDiff(t);
 
-		} catch (WrongBracketsException | IncorrectLambdaExpressionException | IOException e) {
-			System.out.println(e.toString());
-			e.printStackTrace();
-		}
+        } catch (WrongBracketsException | IncorrectLambdaExpressionException | IOException e) {
+            System.out.println(e.toString());
+            e.printStackTrace();
+        }
 
-	}
+    }
 
-	public static void checkDiff(Vertex t) throws IOException, WrongBracketsException, IncorrectLambdaExpressionException {
-		MyReader myReader = new MyReader("tests/answer.out");
+    public static void checkDiff(Vertex t) throws IOException, WrongBracketsException, IncorrectLambdaExpressionException {
+        MyReader myReader = new MyReader("tests/answer.out");
 
-		String raw = myReader.readString();
+        String raw = myReader.readString();
 
-		Vertex v = Parser.parseString(raw);
+        Vertex v = Parser.parseString(raw);
 
-		System.out.println("Compare to answer.out : " + v.equals(t));
-	}
+        System.out.println("Compare to answer.out : " + v.equals(t));
+    }
 }

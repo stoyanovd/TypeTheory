@@ -5,11 +5,11 @@ package dima.utils.exceptions;
  */
 public class WrongBracketsException extends Exception {
 
-	public WrongBracketsException() {
-		super();
-	}
+    public WrongBracketsException() {
+        super();
+    }
 
-	public WrongBracketsException(String message) {
-		super(message);
-	}
+    public WrongBracketsException(String message) {
+        super(message);
+    }
 }

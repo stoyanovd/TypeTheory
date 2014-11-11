@@ -5,11 +5,11 @@ package dima.vertexes.exceptions;
  */
 public class BoundProposeException extends Exception {
 
-	public BoundProposeException() {
-		super();
-	}
+    public BoundProposeException() {
+        super();
+    }
 
-	public BoundProposeException(String message) {
-		super(message);
-	}
+    public BoundProposeException(String message) {
+        super(message);
+    }
 }

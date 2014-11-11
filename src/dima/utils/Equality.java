@@ -5,7 +5,7 @@ package dima.utils;
  */
 public class Equality {
 
-	public static boolean equalOrNulls(Object x, Object y) {
-		return x == null && y == null || !(x == null || y == null) && x.equals(y);
-	}
+    public static boolean equalOrNulls(Object x, Object y) {
+        return x == null && y == null || !(x == null || y == null) && x.equals(y);
+    }
 }

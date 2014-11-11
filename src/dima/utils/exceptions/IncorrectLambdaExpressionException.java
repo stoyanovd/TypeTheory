@@ -5,11 +5,11 @@ package dima.utils.exceptions;
  */
 public class IncorrectLambdaExpressionException extends Exception {
 
-	public IncorrectLambdaExpressionException() {
-		super();
-	}
+    public IncorrectLambdaExpressionException() {
+        super();
+    }
 
-	public IncorrectLambdaExpressionException(String message) {
-		super(message);
-	}
+    public IncorrectLambdaExpressionException(String message) {
+        super(message);
+    }
 }

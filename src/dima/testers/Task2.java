@@ -16,30 +16,30 @@ import java.util.TreeSet;
  */
 public class Task2 {
 
-	public static void main(String arg[]) {
+    public static void main(String arg[]) {
 
-		try {
-			Initials.init();
-			MyReader myReader = new MyReader("tests/task2.in");
-			MyPrinter myPrinter = new MyPrinter("tests/task2.out");
+        try {
+            Initials.init();
+            MyReader myReader = new MyReader("tests/task2.in");
+            MyPrinter myPrinter = new MyPrinter("tests/task2.out");
 
-			String raw = myReader.readString();
-			System.out.println("This was obtained after reading and initial simplify:\n\"" + raw + "\"\n");
+            String raw = myReader.readString();
+            System.out.println("This was obtained after reading and initial simplify:\n\"" + raw + "\"\n");
 
-			Vertex v = Parser.parseString(raw);
-			myPrinter.printLambdaExpression(v);
+            Vertex v = Parser.parseString(raw);
+            myPrinter.printLambdaExpression(v);
 
-			System.out.println("\n");
-			TreeSet<String> proposes = new TreeSet<>(Vertex.getFreeProposes(v));
-			for (String s : proposes) {
-				myPrinter.printlnString(s);
-			}
-			MyPrinter.printLambdaExpressionAsTree(v);
+            System.out.println("\n");
+            TreeSet<String> proposes = new TreeSet<>(Vertex.getFreeProposes(v));
+            for (String s : proposes) {
+                myPrinter.printlnString(s);
+            }
+            MyPrinter.printLambdaExpressionAsTree(v);
 
-		} catch (WrongBracketsException | IncorrectLambdaExpressionException | IOException e) {
-			System.out.println(e.toString());
-			e.printStackTrace();
-		}
+        } catch (WrongBracketsException | IncorrectLambdaExpressionException | IOException e) {
+            System.out.println(e.toString());
+            e.printStackTrace();
+        }
 
-	}
+    }
 }

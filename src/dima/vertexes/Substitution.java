@@ -1,84 +1,59 @@
 package dima.vertexes;
 
-import dima.vertexes.exceptions.BoundProposeException;
-
-import java.util.ArrayList;
-import java.util.Set;
-
 /**
  * Created  by dima  on 16.09.14.
  */
 public class Substitution {
 
-	private String propose;
-	private Vertex replacement;
+    private String propose;
+    private Vertex replacement;
 
-	private ArrayList<String> openedLambdas;
-	private Set<String> replacementFreeProposes;
+    public Substitution(String propose, Vertex replacement) {
+        this.propose = propose;
+        this.replacement = new Vertex(replacement);  //  Wow
+    }
 
-	private Vertex changedVertex;
+    public static Vertex remakeVertex(String propose, Vertex replacement, Vertex touchablePlace) {
 
-	public Substitution(String propose, Vertex replacement) {
-		this.propose = propose;
-		this.replacement = replacement;
-		openedLambdas = new ArrayList<>();
-		changedVertex = null;
-		replacementFreeProposes = Vertex.getFreeProposes(replacement);
-	}
+        Substitution substitution = new Substitution(propose, replacement);
 
+        return substitution.makeVertex(touchablePlace);
+        /*
+        long time = System.currentTimeMillis();
+           try {
+               return substitution.makeVertex(touchablePlace);
+           }
+           finally {
+               DebugInformer.redTime += System.currentTimeMillis() - time;
+           }*/
+    }
 
-	public static Vertex getNewSubstitutionVertex(String propose, Vertex replacement, Vertex untouchablePlace) {
-		Substitution substitution = new Substitution(propose, replacement);
-		substitution.makeSubstitution(untouchablePlace);
-		return substitution.changedVertex;
-	}
-
-	public Vertex getNewSubstituted() {
-		return new Vertex(changedVertex);
-	}
-
-	public boolean makeSubstitution(Vertex v) {                        //CARE		not ideologically true using of Exceptions
-		try {
-			changedVertex = makeVertex(v);
-		} catch (BoundProposeException e) {
-			changedVertex = new Vertex();
-			changedVertex.propose = e.getMessage();
-			return false;
-		}
-		return true;
-	}
-
-	private Vertex makeVertex(Vertex v) throws BoundProposeException {
-		switch (v.operation) {
-			case 'L': {
-				if (v.left.propose.equals(propose)) {
-					return new Vertex(v);
-				}
-				openedLambdas.add(v.left.propose);
-				Vertex x = new Vertex(v);
-				x.right = makeVertex(v.right);            //CARE    mutable vertexes
-				x.countHashAndCo(false);
-				openedLambdas.remove(openedLambdas.size() - 1);
-				return x;
-			}
-			case 'A': {
-				return Vertex.makeApplication(makeVertex(v.left), makeVertex(v.right));
-			}
-			case 'V': {
-				if (!v.propose.equals(propose)) {
-					return new Vertex(v);
-				}
-				for (String s : openedLambdas) {
-					if (replacementFreeProposes.contains(s)) {
-						throw new BoundProposeException(s);
-					}
-				}
-				return new Vertex(replacement);
-			}
-			default: {
-				throw new NullPointerException("These cases must be done");
-			}
-		}
-	}
+    private Vertex makeVertex(Vertex v) {
+        switch (v.operation) {
+            case 'L': {
+                if (v.left.propose.equals(propose)) {
+                    return v;
+                }
+                v.right = makeVertex(v.right);
+                v.countHashAndCo();
+                return v;
+            }
+            case 'A': {
+                v.left = makeVertex(v.left);
+                v.right = makeVertex(v.right);
+                v.countHashAndCo();
+                return v;
+            }
+            case 'V': {
+                if (!v.propose.equals(propose)) {
+                    return v;
+                }
+                return replacement;
+            }
+            default: {
+                throw new NullPointerException("These cases must be done");
+            }
+        }
+    }
 
 }
